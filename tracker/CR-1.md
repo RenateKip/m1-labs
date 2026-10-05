@@ -25,7 +25,7 @@ Iesniegumos bieži ir nepareizi personas kodi. Sistēmai jāpārbauda, vai perso
 | # | Ievade | Sagaidāmais rezultāts |
 |---|---|---|
 | 1 | `32000000001` | 201, saglabāts `32000000001` |
-| 2 | `320000-00001` | 201, saglabāts `32000000001` |
+| 2 | `320000-00001` (jaunais kods ar defisi) | 400 `INVALID_FORMAT` |
 | 3 | `" 32000000001 "` | 201 (atstarpes noņemtas) |
 | 4 | `3200000000` (10 cipari) | 400 `INVALID_FORMAT` |
 | 5 | `320000000012` (12 cipari) | 400 `INVALID_FORMAT` |
@@ -33,12 +33,21 @@ Iesniegumos bieži ir nepareizi personas kodi. Sistēmai jāpārbauda, vai perso
 | 7 | Lauka nav | 400 `REQUIRED` |
 | 8 | Vecā formāta sintētisks kods `311299-21233` | 201, saglabāts `31129921233` |
 | 9 | `3200-0000001` (defise nepareizā vietā) | 400 `INVALID_FORMAT` |
+| 10 | `381216-14082` (ar defisi, sākas ar 38) | 400 `INVALID_FORMAT` |
+| 11 | `38121614082` (bez defises, sākas ar 38) | 400 `INVALID_FORMAT` |
+| 12 | `311216-14082` (ar defisi, sākas ar 31) | 201, saglabāts `31121614082` |
+| 13 | `011216-14082` (ar defisi, sākas ar 01) | 201, saglabāts `01121614082` |
+| 14 | `001216-14082` (ar defisi, sākas ar 00) | 400 `INVALID_FORMAT` |
+| 15 | `31121614082` (vecais kods bez defises) | 400 `INVALID_FORMAT` |
+| 16 | `321216-14082` (ar defisi, sākas ar 32) | 400 `INVALID_FORMAT` |
+
 
 ## Precizējumi (clarifications)
 
 | Jautājums | Atbilde | Kas atbildēja, kad |
 |---|---|---|
-| Vai pieņemt defisi? | Abus veidus: `DDMMYY-NNNNN` un 11 ciparus. Saglabāt 11 ciparus bez defises. | Produkta īpašnieks, 2026-09-30 |
+| Vai pieņemt defisi? | Vecais kods tikai ar defisi: `DDMMYY-NNNNN`. Jaunais kods tikai 11 cipari bez defises. Saglabāt 11 ciparus bez defises. | Produkta īpašnieks, 2026-09-30, precizēts 2026-10-05 |
+| Ar kādiem cipariem kods sākas? | Ar defisi: `01`–`31`. Bez defises: tikai `32`. Citi sākumi (`00`, `33`–`99`) nav derīgi. | Produkta īpašnieks, 2026-10-05 |
 | Vai pārbaudīt dzimšanas datumu vai kontrolciparu? | Nē. Tikai formātu. Jaunajiem kodiem (sākas ar `32`) nav ne viena, ne otra. | Produkta īpašnieks, 2026-09-30 |
 | Tukša virkne vai tikai atstarpes? | Tāpat kā tad, ja lauka nav: 400 `REQUIRED`. | Produkta īpašnieks, 2026-09-30 |
 | Kāda ir kļūdas atbilde? | 400 pēc līguma (API contract): `INVALID_FORMAT`, vai `REQUIRED`, ja lauka nav. Kļūda atbilst līguma kļūdu shēmai. | Produkta īpašnieks, 2026-09-30 |
@@ -47,7 +56,7 @@ Iesniegumos bieži ir nepareizi personas kodi. Sistēmai jāpārbauda, vai perso
 
 ## Ārpus tvēruma (out of scope)
 
-- Kontrolcipara un dzimšanas datuma pārbaude
+- Kontrolcipara pārbaude un pilna dzimšanas datuma pārbaude (pārbauda tikai, vai kods ar defisi sākas ar `01`–`31`)
 - Pārbaude reģistrā, vai persona eksistē (CR-2)
 - Citu lauku pārbaude: vārds, e-pasts, temats, teksts
 - Esošie iesniegumi ar nepareiziem kodiem
