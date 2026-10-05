@@ -7,8 +7,9 @@ from enum import Enum
 from pydantic import BaseModel, field_validator
 from pydantic_core import PydanticCustomError
 
-# CR-1: 11 cipari vai DDMMYY-NNNNN. Tikai formāts, bez kontrolcipara.
-PERSONAL_CODE = re.compile(r"[0-9]{6}-?[0-9]{5}")
+# CR-1: vecais kods tikai DDMMYY-NNNNN (DD 01–31), jaunais tikai 32 + 9 cipari.
+# Tikai formāts, bez kontrolcipara.
+PERSONAL_CODE = re.compile(r"(?:0[1-9]|[12][0-9]|3[01])[0-9]{4}-[0-9]{5}|32[0-9]{9}")
 
 
 class PreferredChannel(str, Enum):
@@ -50,7 +51,7 @@ class SubmissionStatus(str, Enum):
     WITHDRAWN = "WITHDRAWN"
 
 
-class SubmissionCreate(BaseModel):
+class SubmissionFields(BaseModel):
     personalCode: str
     fullName: str
     email: str  # TODO: pārbaudīt e-pasta formātu
@@ -59,6 +60,9 @@ class SubmissionCreate(BaseModel):
     subject: str
     body: str
 
+
+class SubmissionCreate(SubmissionFields):
+    # Pārbauda tikai ievadi. Saglabātais kods ir bez defises un šo pārbaudi neiziet.
     @field_validator("personalCode")
     @classmethod
     def normalise_personal_code(cls, value: str) -> str:
@@ -79,7 +83,7 @@ class SubmissionCreated(BaseModel):
     reasonCode: ReasonCode | None = None
 
 
-class Submission(SubmissionCreated, SubmissionCreate):
+class Submission(SubmissionCreated, SubmissionFields):
     pass
 
 
