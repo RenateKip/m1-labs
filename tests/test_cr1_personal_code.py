@@ -1,5 +1,7 @@
 """CR-1: personas koda pārbaude (tracker/CR-1.md). Viena rinda = viens tests."""
 
+import logging
+
 import pytest
 
 
@@ -60,6 +62,10 @@ def test_cr1_ac7_blank_value_required(client, valid_payload):
     _assert_issue(_submit(client, valid_payload, "   "), "REQUIRED")
 
 
+def test_cr1_empty_string_required(client, valid_payload):
+    _assert_issue(_submit(client, valid_payload, ""), "REQUIRED")
+
+
 def test_cr1_ac8_old_format_accepted(client, valid_payload):
     response = _submit(client, valid_payload, "311299-21233")
     assert response.status_code == 201
@@ -69,3 +75,9 @@ def test_cr1_ac8_old_format_accepted(client, valid_payload):
 def test_cr1_error_does_not_echo_input(client, valid_payload):
     response = _submit(client, valid_payload, "320000000012")
     assert "320000000012" not in response.text
+
+
+def test_cr1_error_not_logged(client, valid_payload, caplog):
+    with caplog.at_level(logging.DEBUG):
+        _submit(client, valid_payload, "320000000012")
+    assert "320000000012" not in caplog.text
