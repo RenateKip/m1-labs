@@ -6,95 +6,198 @@
   <title>Iesniegums · Ezermalas novada pašvaldība</title>
   <style>
     :root {
-      --navy: #1D3557;
-      --teal: #2A9D8F;
-      --coral: #E76F51;
-      --bg: #F1F3F5;
-      --line: #C9CED6;
+      --ink: #0E1B2E;
+      --panel: #10233F;
+      --amber: #F2B544;
+      --muted: #3A4658;
+      --error: #B3401F;
+      --ok: #1F7A70;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: #1a1a1a;
+      font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 18px;
+      color: var(--ink);
+      background: #fff;
     }
-    header { background: var(--navy); color: #fff; padding: 16px; }
-    header h1 { margin: 0; font-size: 1.25rem; }
-    header p { margin: 4px 0 0; font-size: 0.85rem; opacity: 0.85; }
-    main { max-width: 720px; margin: 0 auto; padding: 16px; }
-    .card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    label { display: block; font-weight: 600; margin-top: 12px; }
+    .layout { display: flex; flex-wrap: wrap; min-height: 100vh; }
+
+    /* Sānu panelis */
+    .panel {
+      flex: 1 1 360px; min-width: 0;
+      background: var(--panel); color: #fff;
+      padding: 48px 40px;
+      display: flex; flex-direction: column; gap: 32px;
+    }
+    .org { display: flex; flex-direction: column; gap: 4px; }
+    .org strong { font-size: 18px; }
+    .org span { font-size: 15px; color: #C9D3E0; }
+    .panel h1 { margin: 0; font-size: 48px; line-height: 1.05; font-weight: 800; }
+    .lead { margin: 0; font-size: 20px; line-height: 1.5; color: #E3E9F1; }
+    .steps { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 20px; }
+    .steps li { display: flex; gap: 14px; align-items: flex-start; line-height: 1.45; }
+    .steps .num {
+      flex: none; width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid var(--amber); color: var(--amber); font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .steps li:first-child .num { background: var(--amber); color: var(--ink); }
+    .help { margin-top: auto; border-top: 1px solid #3A4E6B; padding-top: 20px; font-size: 16px; line-height: 1.5; color: #E3E9F1; }
+    .help a { color: #fff; font-weight: 600; }
+    .help a:hover { color: var(--amber); }
+
+    /* Forma */
+    main { flex: 999 1 560px; min-width: 0; padding: 48px 40px 64px; }
+    form { max-width: 640px; display: flex; flex-direction: column; gap: 32px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .row { display: flex; flex-wrap: wrap; gap: 24px; }
+    .row > .field { flex: 1 1 260px; }
+    label, legend { font-weight: 800; font-size: 20px; }
+    .hint { font-size: 16px; color: var(--muted); }
     input, select, textarea {
-      width: 100%; padding: 8px; margin-top: 4px; font: inherit;
-      border: 1px solid var(--line); border-radius: 6px; background: #fff;
+      width: 100%; min-height: 56px; padding: 14px 16px;
+      font: inherit; font-size: 18px; color: var(--ink);
+      background: #fff; border: 2px solid var(--ink); border-radius: 4px;
     }
-    textarea { min-height: 96px; resize: vertical; }
-    .field-error { color: var(--coral); font-size: 0.9rem; margin-top: 4px; min-height: 1em; }
-    .invalid { border-color: var(--coral); }
+    input:focus, select:focus, textarea:focus { outline: 4px solid var(--amber); outline-offset: 0; }
+    #personalCode { max-width: 320px; letter-spacing: 0.06em; }
+    .select-wrap { position: relative; max-width: 420px; }
+    .select-wrap select { appearance: none; padding-right: 48px; cursor: pointer; }
+    .select-wrap svg { position: absolute; right: 16px; top: 17px; pointer-events: none; }
+    textarea { min-height: 200px; resize: vertical; line-height: 1.55; }
+    .counter { font-size: 16px; color: var(--muted); align-self: flex-end; }
+    .ic { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    fieldset { margin: 0; padding: 0; border: 0; }
+    legend { padding: 0; margin-bottom: 12px; }
+    .segmented { display: flex; flex-wrap: wrap; border: 2px solid var(--ink); border-radius: 4px; overflow: hidden; }
+    .segmented label {
+      flex: 1 1 140px; display: flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 56px; padding: 0 16px; font-size: 18px; font-weight: 600; cursor: pointer;
+    }
+    .segmented label + label { border-left: 2px solid var(--ink); }
+    .segmented input { width: 20px; height: 20px; min-height: 0; margin: 0; accent-color: var(--amber); }
+    .segmented label:has(input:checked) { background: var(--ink); color: #fff; }
+    .segmented label:has(input:focus-visible) { outline: 4px solid var(--amber); outline-offset: -4px; }
+
+    .field-error { color: var(--error); font-size: 16px; font-weight: 600; }
+    .field-error:empty { display: none; }
+    .invalid, fieldset.invalid .segmented { border-color: var(--error); border-width: 3px; }
+
     button {
-      margin-top: 16px; padding: 10px 20px; font: inherit; font-weight: 600;
-      color: #fff; background: var(--teal); border: 0; border-radius: 6px; cursor: pointer;
+      align-self: flex-start; min-height: 60px; padding: 0 40px;
+      font: inherit; font-size: 20px; font-weight: 800;
+      color: var(--ink); background: var(--amber);
+      border: 2px solid var(--ink); border-radius: 4px; cursor: pointer;
+      display: flex; align-items: center; gap: 12px;
     }
+    button:focus-visible { outline: 4px solid var(--ink); outline-offset: 2px; }
     button:disabled { opacity: 0.6; cursor: wait; }
-    .message { padding: 12px; border-radius: 6px; margin-top: 16px; }
-    .message.error { background: #fdece7; border: 1px solid var(--coral); }
-    .message.ok { background: #e6f4f2; border: 1px solid var(--teal); }
-    dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 8px 0 0; }
-    dt { font-weight: 600; }
+
+    .message { padding: 20px; border-radius: 4px; line-height: 1.5; }
+    .message:empty { display: none; }
+    .message.error { border: 3px solid var(--error); }
+    .message.error strong { color: var(--error); }
+    .message.ok { border: 3px solid var(--ok); background: #E6F4F2; }
+    dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; margin: 12px 0 0; }
+    dt { font-weight: 800; }
     dd { margin: 0; }
-    footer { font-size: 0.8rem; color: #555; text-align: center; padding: 16px; }
-    a { color: var(--navy); }
+    footer { font-size: 15px; color: var(--muted); padding: 24px 0 0; }
+    footer a { color: var(--ink); }
+
+    @media (max-width: 600px) {
+      .panel { padding: 32px 16px; gap: 24px; }
+      .panel h1 { font-size: 36px; }
+      main { padding: 32px 16px 48px; }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Ezermalas novada pašvaldība · Iesniegums</h1>
-    <p>Mācību prototips. Pašvaldība ir izdomāta. Ievadiet tikai sintētiskus datus.</p>
-  </header>
+  <div class="layout">
+    <aside class="panel">
+      <div class="org">
+        <strong>Ezermalas novada pašvaldība</strong>
+        <span>Mācību prototips. Pašvaldība ir izdomāta. Ievadiet tikai sintētiskus datus.</span>
+      </div>
 
-  <main>
-    <form id="submission-form" class="card" novalidate>
-      <label for="personalCode">Personas kods</label>
-      <input id="personalCode" name="personalCode" autocomplete="off">
-      <div class="field-error" data-for="personalCode"></div>
+      <h1>Uzrakstiet pašvaldībai</h1>
+      <p class="lead">Iesniegums aizņem dažas minūtes. Visi lauki ir obligāti.</p>
 
-      <label for="fullName">Vārds, uzvārds</label>
-      <input id="fullName" name="fullName" autocomplete="off">
-      <div class="field-error" data-for="fullName"></div>
+      <ol class="steps">
+        <li><span class="num">1</span><span>Aizpildiet formu un iesniedziet.</span></li>
+        <li><span class="num">2</span><span>Uzreiz redzēsiet iesnieguma numuru un atbildes termiņu.</span></li>
+        <li><span class="num">3</span><span>Atbildi saņemsiet līdz termiņam. Ja jums ir aktivizēta oficiālā e-adrese, sūtīsim uz to.</span></li>
+      </ol>
 
-      <label for="email">E-pasts</label>
-      <input id="email" name="email" autocomplete="off">
-      <div class="field-error" data-for="email"></div>
+      <div class="help">Vajag palīdzību? Zvaniet <a href="tel:674555055">674555055</a>.</div>
+    </aside>
 
-      <label for="topic">Tēma</label>
-      <select id="topic" name="topic"></select>
-      <div class="field-error" data-for="topic"></div>
+    <main>
+      <form id="submission-form" novalidate>
+        <div class="field">
+          <label for="personalCode">Personas kods</label>
+          <span class="hint" id="personalCode-hint">11 cipari bez defises vai vecais kods DDMMGG-NNNNN</span>
+          <div class="field-error" data-for="personalCode" id="personalCode-error"></div>
+          <input id="personalCode" name="personalCode" autocomplete="off" inputmode="numeric"
+                 aria-describedby="personalCode-hint personalCode-error">
+        </div>
 
-      <label for="subject">Temats</label>
-      <input id="subject" name="subject" autocomplete="off">
-      <div class="field-error" data-for="subject"></div>
+        <div class="row">
+          <div class="field">
+            <label for="fullName">Vārds, uzvārds</label>
+            <div class="field-error" data-for="fullName" id="fullName-error"></div>
+            <input id="fullName" name="fullName" autocomplete="off" aria-describedby="fullName-error">
+          </div>
+          <div class="field">
+            <label for="email">E-pasts</label>
+            <div class="field-error" data-for="email" id="email-error"></div>
+            <input id="email" name="email" autocomplete="off" aria-describedby="email-error">
+          </div>
+        </div>
 
-      <label for="body">Teksts</label>
-      <textarea id="body" name="body"></textarea>
-      <div class="field-error" data-for="body"></div>
+        <div class="field">
+          <label for="topic">Tēma</label>
+          <div class="field-error" data-for="topic" id="topic-error"></div>
+          <div class="select-wrap">
+            <select id="topic" name="topic" aria-describedby="topic-error"></select>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path class="ic" d="M6 9l6 6 6-6"></path></svg>
+          </div>
+        </div>
 
-      <label for="preferredChannel">Atbildes kanāls</label>
-      <select id="preferredChannel" name="preferredChannel">
-        <option value="EMAIL">E-pasts</option>
-        <option value="POST">Pasts</option>
-        <option value="E_ADDRESS">E-adrese</option>
-      </select>
-      <div class="field-error" data-for="preferredChannel"></div>
+        <div class="field">
+          <label for="subject">Temats</label>
+          <div class="field-error" data-for="subject" id="subject-error"></div>
+          <input id="subject" name="subject" autocomplete="off" aria-describedby="subject-error">
+        </div>
 
-      <button type="submit" id="submit">Iesniegt</button>
-      <div id="message" aria-live="polite"></div>
-    </form>
-  </main>
+        <div class="field">
+          <label for="body">Teksts</label>
+          <span class="hint" id="body-hint">Aprakstiet, kas noticis un kur. Līdz 2000 rakstzīmēm.</span>
+          <div class="field-error" data-for="body" id="body-error"></div>
+          <textarea id="body" name="body" aria-describedby="body-hint body-error body-counter"></textarea>
+          <span class="counter" id="body-counter" aria-live="polite"></span>
+        </div>
 
-  <footer>
-    <a href="/docs">Swagger UI (/docs)</a> · Ezermalas pieteikumu sistēma · mācību prototips
-  </footer>
+        <fieldset id="preferredChannel" aria-describedby="preferredChannel-error">
+          <legend>Kā vēlaties saņemt atbildi?</legend>
+          <div class="field-error" data-for="preferredChannel" id="preferredChannel-error"></div>
+          <div class="segmented">
+            <label><input type="radio" name="preferredChannel" value="EMAIL" checked>E-pasts</label>
+            <label><input type="radio" name="preferredChannel" value="POST">Pasts</label>
+            <label><input type="radio" name="preferredChannel" value="E_ADDRESS">E-adrese</label>
+          </div>
+        </fieldset>
+
+        <button type="submit" id="submit">Iesniegt<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path class="ic" d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+        <div id="message" class="message" aria-live="polite"></div>
+      </form>
+
+      <footer>
+        <a href="/docs">Swagger UI (/docs)</a> · Ezermalas pieteikumu sistēma · mācību prototips
+      </footer>
+    </main>
+  </div>
 
   <script>
     // Ja API vēl nedod tēmu sarakstu (GET /topics), izmanto šo sarakstu.
@@ -104,6 +207,7 @@
       { code: "PLANNING", name: "Teritorijas plānošana" },
       { code: "OTHER", name: "Cits" },
     ];
+    const BODY_MAX = 2000;
     const ISSUE_TEXT = {
       REQUIRED: "Obligāts lauks",
       INVALID_FORMAT: "Nepareizs formāts",
@@ -126,6 +230,8 @@
     const form = document.getElementById("submission-form");
     const message = document.getElementById("message");
     const submitButton = document.getElementById("submit");
+    const bodyInput = document.getElementById("body");
+    const bodyCounter = document.getElementById("body-counter");
 
     function pad(n) { return String(n).padStart(2, "0"); }
 
@@ -143,6 +249,18 @@
       const div = document.createElement("div");
       div.textContent = text == null ? "" : String(text);
       return div.innerHTML;
+    }
+
+    // Skaitītājs tikai informē. Garumu pārbauda API (TOO_LONG).
+    function updateCounter() {
+      const left = BODY_MAX - bodyInput.value.length;
+      if (left < 0) {
+        bodyCounter.textContent = `${-left} rakstzīmes par daudz`;
+      } else if (left % 10 === 1 && left % 100 !== 11) {
+        bodyCounter.textContent = `Atlikusi ${left} rakstzīme`;
+      } else {
+        bodyCounter.textContent = `Atlikušas ${left} rakstzīmes`;
+      }
     }
 
     async function loadTopics() {
@@ -163,7 +281,11 @@
 
     function clearErrors() {
       document.querySelectorAll(".field-error").forEach((el) => (el.textContent = ""));
-      document.querySelectorAll(".invalid").forEach((el) => el.classList.remove("invalid"));
+      document.querySelectorAll(".invalid").forEach((el) => {
+        el.classList.remove("invalid");
+        el.removeAttribute("aria-invalid");
+      });
+      message.className = "message";
       message.innerHTML = "";
     }
 
@@ -174,7 +296,9 @@
         const text = ISSUE_TEXT[detail.issue] || detail.issue;
         if (target) {
           target.textContent = text;
-          document.getElementById(detail.field)?.classList.add("invalid");
+          const input = document.getElementById(detail.field);
+          input?.classList.add("invalid");
+          input?.setAttribute("aria-invalid", "true");
         } else {
           unknown.push(`${detail.field}: ${text}`);
         }
@@ -207,6 +331,7 @@
       unknown.forEach((u) => lines.push(escapeHtml(u)));
       message.className = "message error";
       message.innerHTML = lines.join("<br>");
+      document.querySelector(".invalid")?.focus();
     }
 
     form.addEventListener("submit", async (event) => {
@@ -239,6 +364,8 @@
       }
     });
 
+    bodyInput.addEventListener("input", updateCounter);
+    updateCounter();
     loadTopics();
   </script>
 </body>
